@@ -4,96 +4,124 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ShopGenie — AI Storefront + PayPal Checkout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,900&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@31.3.2/dist/ag-grid-community.min.js"></script>
 </head>
 <body>
-<header>
+<div class="awning" aria-hidden="true"></div>
+
+<header class="hero">
   <div class="wrap">
-    <h1>🧞 ShopGenie</h1>
-    <p>Describe a business → AI builds the store → agent sells → PayPal checks out.</p>
-    <div style="margin-top:.5rem">
-      <span class="badge">PayPal Sandbox (Orders v2)</span>
-      <span class="badge">AI: OpenAI + offline stub</span>
-      <span class="badge">AG Grid ledger</span>
-      <span class="badge" id="modeBadge">…</span>
-    </div>
+    <p class="eyebrow">PayPal AI Hackathon · Sandbox only — no real money moves</p>
+    <h1 class="display">Rub the lamp.<br />Stock the stall. <em>Ring the till.</em></h1>
+    <p class="lede">Describe a business → AI builds the catalog → an agent sells it → PayPal checks it out. Three stalls, one working till.</p>
+    <ul class="status" aria-label="Integration status">
+      <li class="chip">PayPal Sandbox · Orders v2</li>
+      <li class="chip chip-ai">AI · OpenAI or offline stub</li>
+      <li class="chip">Ledger · AG Grid</li>
+      <li class="chip live" id="modeBadge">…</li>
+    </ul>
   </div>
 </header>
 
 <main class="wrap">
-  <nav class="tabs">
-    <button data-tab="seller" class="active">1 · Seller Studio</button>
-    <button data-tab="shop">2 · Shop + Agent</button>
-    <button data-tab="dash">3 · Dashboard</button>
+  <nav class="tabs" aria-label="Market stalls">
+    <button data-tab="seller" class="active"><span class="stall">Stall 1</span><span class="stall-name">Stock it</span></button>
+    <button data-tab="shop"><span class="stall">Stall 2</span><span class="stall-name">Sell it</span></button>
+    <button data-tab="dash"><span class="stall">Stall 3</span><span class="stall-name">Count it</span></button>
   </nav>
 
-  <!-- SELLER -->
-  <section id="view-seller" class="view active">
-    <div class="card">
-      <h3>Seller Studio — generate your storefront with AI</h3>
-      <p class="mut">Try: "cozy coffee shop", "plant store for apartments", "handmade candles", "sticker art shop". Works offline; add <code>OPENAI_API_KEY</code> for real LLM output.</p>
+  <!-- STALL 1 -->
+  <section id="view-seller" class="view active" aria-label="Seller studio">
+    <div class="card wish">
+      <p class="eyebrow">Stall 1 · Seller studio</p>
+      <h2>Wish a storefront into existence</h2>
+      <p class="mut">Try “plant store for apartments”, “handmade candles”, “sticker art shop”. Works offline; add <code>OPENAI_API_KEY</code> for live LLM copy.</p>
+      <label class="field-label" for="idea">Your business in one line</label>
       <textarea id="idea" rows="2">cozy neighborhood coffee shop</textarea>
       <div class="row">
-        <button class="primary" id="genBtn">✨ Generate products</button>
+        <button class="primary" id="genBtn">Grant the wish</button>
         <button class="ghost" id="resetBtn">Reset demo catalog</button>
       </div>
-      <pre id="genOut">Catalog status appears here…</pre>
+      <pre id="genOut" class="terminal">Catalog status appears here…</pre>
     </div>
     <div class="card">
-      <h3>Live catalog (<span id="pCount">0</span>)</h3>
+      <div class="card-head">
+        <div><p class="eyebrow">Tonight’s shelves</p><h2>Live catalog (<span id="pCount">0</span>)</h2></div>
+      </div>
       <div class="grid" id="sellerGrid"></div>
     </div>
   </section>
 
-  <!-- SHOP -->
-  <section id="view-shop" class="view">
-    <div class="card">
-      <h3>🤖 Agentic shopping assistant</h3>
-      <div class="chatlog" id="chatlog"><div><span class="a">Hi! Tell me budget + vibe, e.g. "gift under $25 for a plant lover". I'll recommend from the live catalog.</span></div></div>
+  <!-- STALL 2 -->
+  <section id="view-shop" class="view" aria-label="Shop and agent">
+    <div class="card agent">
+      <p class="eyebrow">Stall 2 · The agent behind the counter</p>
+      <h2>Ask for the vibe, get the ticket</h2>
+      <div class="chatlog" id="chatlog" aria-live="polite">
+        <div class="msg agent-msg"><span>Hi — I mind this stall. Tell me budget + vibe, e.g. “gift under $25 for a plant lover”, and I’ll pull tickets from the live shelves.</span></div>
+      </div>
       <div class="row">
-        <input id="chatIn" placeholder='e.g. gift under $25 for a coffee lover' />
-        <button class="primary" id="chatBtn" style="flex:0 0 120px">Ask</button>
+        <label class="sr" for="chatIn">Ask the agent</label>
+        <input id="chatIn" placeholder="gift under $25 for a coffee lover" autocomplete="off" />
+        <button class="primary fixed" id="chatBtn">Ask</button>
       </div>
       <pre id="agentOut" style="display:none"></pre>
     </div>
+
     <div class="card">
-      <h3>Store + cart</h3>
-      <div class="grid" id="shopGrid"></div>
-      <h4>Cart: <span id="cartTotal">$0.00</span></h4>
-      <div id="cartList" class="mut">Empty — add something.</div>
-      <input id="buyerNote" placeholder="Note for seller (optional)" />
-      <div class="row" style="margin-top:.5rem">
-        <input id="amount" placeholder="Amount USD (auto from cart)" />
+      <div class="card-head">
+        <div><p class="eyebrow">The shelves</p><h2>Take a ticket</h2></div>
       </div>
-      <div id="paypal-buttons" style="margin-top:.5rem"></div>
-      <button class="ghost" id="mockPayBtn">⚡ 1-click mock PayPal capture (no keys needed)</button>
-      <pre id="payOut">Payment status appears here…</pre>
+      <div class="grid" id="shopGrid"></div>
+    </div>
+
+    <div class="receipt" aria-label="Checkout receipt">
+      <div class="receipt-head">
+        <p class="eyebrow">ShopGenie till receipt</p>
+        <h2>Cart · <span id="cartTotal">$0.00</span></h2>
+      </div>
+      <div id="cartList" class="mut cart-lines">Empty — take a ticket above.</div>
+      <div class="perf" aria-hidden="true"></div>
+      <label class="field-label" for="buyerNote">Note for the seller (optional)</label>
+      <input id="buyerNote" placeholder="Gift wrap it?" autocomplete="off" />
+      <label class="field-label" for="amount">Charge (USD, follows the cart)</label>
+      <input id="amount" inputmode="decimal" placeholder="0.00" />
+      <div id="paypal-buttons"></div>
+      <button class="ghost" id="mockPayBtn">Ring it up without keys — mock capture</button>
+      <pre id="payOut" class="terminal">Payment status prints here…</pre>
+      <div class="stamp" id="paidStamp" aria-hidden="true">PAID</div>
     </div>
   </section>
 
-  <!-- DASHBOARD -->
-  <section id="view-dash" class="view">
+  <!-- STALL 3 -->
+  <section id="view-dash" class="view" aria-label="Dashboard">
     <div class="card">
-      <h3>📊 Seller dashboard</h3>
-      <div class="row">
-        <div><strong id="revStat">$0.00</strong><div class="mut">Revenue</div></div>
-        <div><strong id="ordStat">0</strong><div class="mut">Orders</div></div>
-        <div><strong id="aovStat">$0.00</strong><div class="mut">Avg order</div></div>
-      </div>
-      <h4>AI insights</h4>
-      <pre id="insightsOut">Loading…</pre>
-      <button class="ghost" id="refreshBtn">Refresh</button>
+      <p class="eyebrow">Stall 3 · After close</p>
+      <h2>Count the till</h2>
+      <dl class="tots">
+        <div><dt>Revenue</dt><dd id="revStat">$0.00</dd></div>
+        <div><dt>Orders</dt><dd id="ordStat">0</dd></div>
+        <div><dt>Avg ticket</dt><dd id="aovStat">$0.00</dd></div>
+      </dl>
+      <h3 class="sub">Agent’s closing notes</h3>
+      <pre id="insightsOut" class="terminal">Loading…</pre>
+      <button class="ghost" id="refreshBtn">Recount</button>
     </div>
     <div class="card">
-      <h3>Transactions (AG Grid)</h3>
-      <p class="mut">Sortable/filterable ledger. Served from <code>GET /api/transactions</code>.</p>
-      <div id="ag-grid" class="ag-theme-quartz"></div>
+      <div class="card-head">
+        <div><p class="eyebrow">Ledger</p><h2>Every ring, on record</h2></div>
+      </div>
+      <p class="mut">Sortable, filterable. Served from <code>GET /api/transactions</code>.</p>
+      <div id="ag-grid" class="ag-theme-quartz-dark"></div>
     </div>
   </section>
 </main>
 
-<footer>ShopGenie · PayPal AI Hackathon 2026 · Sandbox only — no real money moves · <span id="provLine"></span></footer>
+<footer><span id="provLine"></span> · ShopGenie · PayPal AI Hackathon 2026</footer>
 <script src="app.js"></script>
 </body>
 </html>

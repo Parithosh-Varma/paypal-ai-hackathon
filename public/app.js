@@ -9,7 +9,7 @@ async function api(path, opts) {
   try { return JSON.parse(text); } catch { return { raw: text, status: res.status }; }
 }
 
-// Tabs
+// Stall rail
 document.querySelectorAll("nav.tabs button").forEach((b) => {
   b.onclick = () => {
     document.querySelectorAll("nav.tabs button").forEach((x) => x.classList.remove("active"));
@@ -20,14 +20,16 @@ document.querySelectorAll("nav.tabs button").forEach((b) => {
   };
 });
 
+function esc(s) { return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+
 function productCard(p, mode) {
   const qty = CART[p.id] || 0;
   const btn = mode === "shop"
-    ? `<button class="ghost" onclick="addToCart('${p.id}')">Add${qty ? ` (${qty})` : ""}</button>`
+    ? `<button class="take" onclick="addToCart('${p.id}')">Take ticket${qty ? ` · ${qty} in cart` : ""}</button>`
     : "";
-  return `<div class="product"><div class="em">${p.emoji}</div><h4>${p.name}</h4>
-    <div class="price">${money(p.price)} <span class="pill">${p.category}</span></div>
-    <div class="mut">${p.description}</div><div style="margin-top:.5rem">${btn}</div></div>`;
+  return `<article class="ticket"><div class="em" aria-hidden="true">${esc(p.emoji)}</div><h4>${esc(p.name)}</h4>
+    <div class="price">${money(p.price)}<span class="cat">${esc(p.category)}</span></div>
+    <p class="desc">${esc(p.description)}</p>${btn}</article>`;
 }
 
 async function loadProducts() {
@@ -44,8 +46,9 @@ window.addToCart = (id) => {
 
 function renderCart() {
   const entries = Object.entries(CART);
+  hideStamp();
   if (!entries.length) {
-    $("cartList").textContent = "Empty — add something.";
+    $("cartList").textContent = "Empty — take a ticket above.";
     $("cartTotal").textContent = "$0.00";
     $("amount").value = "";
     return;
@@ -55,7 +58,7 @@ function renderCart() {
     const p = PRODUCTS.find((x) => x.id === id);
     if (!p) return "";
     total += p.price * qty;
-    return `<div>${p.emoji} ${p.name} ×${qty} — ${money(p.price * qty)} <button class="ghost" onclick="rmFromCart('${id}')">−</button></div>`;
+    return `<div>${esc(p.emoji)} ${esc(p.name)} ×${qty} — ${money(p.price * qty)} <button class="ghost" style="padding:.1rem .5rem" onclick="rmFromCart('${id}')" aria-label="Remove one">−</button></div>`;
   }).join("");
   $("cartTotal").textContent = money(total);
   $("amount").value = total.toFixed(2);
@@ -76,36 +79,49 @@ function cartTotal() {
   return cartItems().reduce((s, i) => s + i.price * i.qty, 0);
 }
 
-// Seller: generate
+// Stamp — the signature moment
+function showStamp() {
+  const el = $("paidStamp");
+  el.classList.remove("show");
+  void el.offsetWidth;
+  el.classList.add("show");
+}
+function hideStamp() { $("paidStamp")?.classList.remove("show"); }
+
+// Seller: grant the wish
 $("genBtn").onclick = async () => {
-  $("genOut").textContent = "Generating…";
-  const idea = $("idea").value;
-  const data = await api("/api/products/generate", { method: "POST", body: JSON.stringify({ idea }) });
-  if (data.error) { $("genOut").textContent = "Error: " + data.error; return; }
-  $("genOut").textContent = `Provider: ${data.provider}\nGenerated ${data.products.length} products for "${idea}"`;
-  await loadProducts();
+  $("genBtn").disabled = true;
+  $("genOut").textContent = "Consulting the lamp…";
+  try {
+    const idea = $("idea").value;
+    const data = await api("/api/products/generate", { method: "POST", body: JSON.stringify({ idea }) });
+    if (data.error) { $("genOut").textContent = "The lamp sputters: " + data.error; return; }
+    $("genOut").textContent = `Lamp report · provider ${data.provider}\nStocked ${data.products.length} tickets for "${idea}"`;
+    await loadProducts();
+  } finally { $("genBtn").disabled = false; }
 };
 $("resetBtn").onclick = async () => {
   await api("/api/products", { method: "PUT", body: JSON.stringify({ products: null }) }).catch(() => {});
   location.reload();
 };
 
-// Chat agent
+// Agent chat
 function pushChat(who, text) {
   const d = document.createElement("div");
-  d.className = who === "u" ? "u" : "";
-  d.innerHTML = who === "u" ? `<span>${text}</span>` : `<span class="a">${text}</span>`;
+  d.className = "msg " + (who === "u" ? "you" : "agent-msg");
+  d.textContent = text;
   $("chatlog").appendChild(d);
   $("chatlog").scrollTop = 1e6;
+  return d;
 }
 $("chatBtn").onclick = async () => {
   const message = $("chatIn").value.trim();
   if (!message) return;
   pushChat("u", message);
   $("chatIn").value = "";
-  pushChat("a", "…");
+  const thinking = pushChat("a", "Checking the shelves…");
   const data = await api("/api/ai/chat", { method: "POST", body: JSON.stringify({ message, cart: cartItems() }) });
-  $("chatlog").lastChild.innerHTML = `<span class="a">${(data.reply || data.error || "?").replace(/</g, "&lt;")}</span>`;
+  thinking.textContent = data.reply || data.error || "The agent is speechless.";
   if (data.recommendedIds?.length) {
     const first = data.recommendedIds[0];
     if (PRODUCTS.find((p) => p.id === first)) { CART[first] = (CART[first] || 0) + 1; renderCart(); loadProducts(); }
@@ -117,7 +133,7 @@ $("chatIn").addEventListener("keydown", (e) => { if (e.key === "Enter") $("chatB
 async function initPayPal() {
   const cfg = await api("/api/config");
   if (!cfg.paypalClientId) {
-    $("payOut").textContent = "MOCK PayPal mode (no PAYPAL_CLIENT_ID in .env). Use the 1-click mock capture below — judges can run with zero keys.";
+    $("payOut").textContent = "Night-market mode: no PAYPAL_CLIENT_ID in .env, so the till runs mock captures. Judges can ring sales with zero keys.";
     return;
   }
   const s = document.createElement("script");
@@ -132,18 +148,20 @@ async function initPayPal() {
     onApprove: async (data) => {
       const result = await api(`/api/orders/${data.orderID}/capture`, { method: "POST", body: JSON.stringify({ items: cartItems(), buyerNote: $("buyerNote").value, amount: $("amount").value }) });
       $("payOut").textContent = JSON.stringify(result, null, 2);
+      showStamp();
       CART = {}; renderCart(); loadDashboard();
     },
-    onError: (err) => { $("payOut").textContent = "PayPal error: " + err; },
+    onError: (err) => { $("payOut").textContent = "Till jam: " + err; },
   }).render("#paypal-buttons");
   document.head.appendChild(s);
 }
 $("mockPayBtn").onclick = async () => {
   const amount = $("amount").value || cartTotal().toFixed(2) || "10.00";
-  $("payOut").textContent = "Creating mock order…";
+  $("payOut").textContent = "Ringing up…";
   const order = await api("/api/orders", { method: "POST", body: JSON.stringify({ amount, items: cartItems() }) });
   const result = await api(`/api/orders/${order.id}/capture`, { method: "POST", body: JSON.stringify({ items: cartItems(), buyerNote: $("buyerNote").value, amount }) });
   $("payOut").textContent = JSON.stringify(result, null, 2);
+  showStamp();
   CART = {}; renderCart(); loadDashboard();
 };
 
@@ -166,17 +184,21 @@ async function loadDashboard() {
     { field: "mock", headerName: "Mock?", width: 90, valueFormatter: (p) => (p.value ? "yes" : "live") },
     { field: "buyerNote", headerName: "Note", filter: true, flex: 1 },
   ];
-  const gridOptions = { columnDefs: colDefs, rowData: txs, pagination: true, defaultColDef: { sortable: true, filter: true, resizable: true } };
+  const gridOptions = {
+    columnDefs: colDefs, rowData: txs, pagination: true,
+    defaultColDef: { sortable: true, filter: true, resizable: true },
+    theme: "legacy",
+  };
   if (gridApi) { gridApi.setGridOption("rowData", txs); }
-  else { gridApi = agGrid.createGrid($("ag-grid"), gridOptions); }
+  else if (window.agGrid) { gridApi = agGrid.createGrid($("ag-grid"), gridOptions); }
 }
 $("refreshBtn").onclick = loadDashboard;
 
 // Boot
 (async () => {
   const h = await api("/api/health");
-  $("modeBadge").textContent = h.paypalConfigured ? "PayPal: LIVE sandbox" : "PayPal: MOCK (no keys)";
-  $("provLine").textContent = `AI provider: ${h.aiProvider} · ${h.products} products · ${h.transactions} txns`;
+  $("modeBadge").textContent = h.paypalConfigured ? "Till: live sandbox" : "Till: mock (no keys)";
+  $("provLine").textContent = `AI ${h.aiProvider} · ${h.products} tickets · ${h.transactions} rings`;
   await loadProducts();
   renderCart();
   initPayPal();
