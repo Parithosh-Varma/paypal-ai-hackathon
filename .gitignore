@@ -1,0 +1,13 @@
+# Node
+node_modules/
+.env
+npm-debug.log*
+
+# Data (runtime db is local-only; seed regenerates it)
+data/db.json
+
+# OS / editors
+.DS_Store
+.vscode/
+.idea/
+*.local

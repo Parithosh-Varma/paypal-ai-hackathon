@@ -1,0 +1,20 @@
+{
+  "name": "paypal-ai-hackathon",
+  "version": "1.0.0",
+  "description": "ShopGenie — AI storefront builder + agentic checkout with PayPal Sandbox. PayPal AI Hackathon 2026.",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node src/seed.js",
+    "test:api": "node scripts/smoke.js"
+  },
+  "keywords": ["paypal", "ai", "agentic-commerce", "hackathon", "express", "ag-grid"],
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

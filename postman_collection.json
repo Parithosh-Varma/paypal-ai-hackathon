@@ -1,0 +1,14 @@
+{
+  "info": { "name": "ShopGenie PayPal+AI", "_postman_id": "shopgenie-paypal-ai", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json" },
+  "item": [
+    { "name": "health", "request": { "method": "GET", "url": "{{base}}/api/health" } },
+    { "name": "list products", "request": { "method": "GET", "url": "{{base}}/api/products" } },
+    { "name": "generate products", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"idea\": \"plant store for apartments\"}" }, "url": "{{base}}/api/products/generate" } },
+    { "name": "ai chat", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"message\": \"gift under $25 for a plant lover\"}" }, "url": "{{base}}/api/ai/chat" } },
+    { "name": "create order", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"amount\": \"18.00\", \"currency\": \"USD\"}" }, "url": "{{base}}/api/orders" } },
+    { "name": "capture order", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"items\": [{\"name\": \"Monstera\", \"price\": 18, \"qty\": 1}]}" }, "url": "{{base}}/api/orders/MOCK-XXX/capture" } },
+    { "name": "transactions", "request": { "method": "GET", "url": "{{base}}/api/transactions" } },
+    { "name": "insights", "request": { "method": "GET", "url": "{{base}}/api/ai/insights" } }
+  ],
+  "variable": [{ "key": "base", "value": "http://localhost:3000" }]
+}

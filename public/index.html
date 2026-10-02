@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ShopGenie — AI Storefront + PayPal Checkout</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@31.3.2/dist/ag-grid-community.min.js"></script>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>🧞 ShopGenie</h1>
+    <p>Describe a business → AI builds the store → agent sells → PayPal checks out.</p>
+    <div style="margin-top:.5rem">
+      <span class="badge">PayPal Sandbox (Orders v2)</span>
+      <span class="badge">AI: OpenAI + offline stub</span>
+      <span class="badge">AG Grid ledger</span>
+      <span class="badge" id="modeBadge">…</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="tabs">
+    <button data-tab="seller" class="active">1 · Seller Studio</button>
+    <button data-tab="shop">2 · Shop + Agent</button>
+    <button data-tab="dash">3 · Dashboard</button>
+  </nav>
+
+  <!-- SELLER -->
+  <section id="view-seller" class="view active">
+    <div class="card">
+      <h3>Seller Studio — generate your storefront with AI</h3>
+      <p class="mut">Try: "cozy coffee shop", "plant store for apartments", "handmade candles", "sticker art shop". Works offline; add <code>OPENAI_API_KEY</code> for real LLM output.</p>
+      <textarea id="idea" rows="2">cozy neighborhood coffee shop</textarea>
+      <div class="row">
+        <button class="primary" id="genBtn">✨ Generate products</button>
+        <button class="ghost" id="resetBtn">Reset demo catalog</button>
+      </div>
+      <pre id="genOut">Catalog status appears here…</pre>
+    </div>
+    <div class="card">
+      <h3>Live catalog (<span id="pCount">0</span>)</h3>
+      <div class="grid" id="sellerGrid"></div>
+    </div>
+  </section>
+
+  <!-- SHOP -->
+  <section id="view-shop" class="view">
+    <div class="card">
+      <h3>🤖 Agentic shopping assistant</h3>
+      <div class="chatlog" id="chatlog"><div><span class="a">Hi! Tell me budget + vibe, e.g. "gift under $25 for a plant lover". I'll recommend from the live catalog.</span></div></div>
+      <div class="row">
+        <input id="chatIn" placeholder='e.g. gift under $25 for a coffee lover' />
+        <button class="primary" id="chatBtn" style="flex:0 0 120px">Ask</button>
+      </div>
+      <pre id="agentOut" style="display:none"></pre>
+    </div>
+    <div class="card">
+      <h3>Store + cart</h3>
+      <div class="grid" id="shopGrid"></div>
+      <h4>Cart: <span id="cartTotal">$0.00</span></h4>
+      <div id="cartList" class="mut">Empty — add something.</div>
+      <input id="buyerNote" placeholder="Note for seller (optional)" />
+      <div class="row" style="margin-top:.5rem">
+        <input id="amount" placeholder="Amount USD (auto from cart)" />
+      </div>
+      <div id="paypal-buttons" style="margin-top:.5rem"></div>
+      <button class="ghost" id="mockPayBtn">⚡ 1-click mock PayPal capture (no keys needed)</button>
+      <pre id="payOut">Payment status appears here…</pre>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="view-dash" class="view">
+    <div class="card">
+      <h3>📊 Seller dashboard</h3>
+      <div class="row">
+        <div><strong id="revStat">$0.00</strong><div class="mut">Revenue</div></div>
+        <div><strong id="ordStat">0</strong><div class="mut">Orders</div></div>
+        <div><strong id="aovStat">$0.00</strong><div class="mut">Avg order</div></div>
+      </div>
+      <h4>AI insights</h4>
+      <pre id="insightsOut">Loading…</pre>
+      <button class="ghost" id="refreshBtn">Refresh</button>
+    </div>
+    <div class="card">
+      <h3>Transactions (AG Grid)</h3>
+      <p class="mut">Sortable/filterable ledger. Served from <code>GET /api/transactions</code>.</p>
+      <div id="ag-grid" class="ag-theme-quartz"></div>
+    </div>
+  </section>
+</main>
+
+<footer>ShopGenie · PayPal AI Hackathon 2026 · Sandbox only — no real money moves · <span id="provLine"></span></footer>
+<script src="app.js"></script>
+</body>
+</html>
