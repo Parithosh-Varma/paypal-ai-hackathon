@@ -8,13 +8,25 @@
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "seed": "node src/seed.js",
-    "test:api": "node scripts/smoke.js"
+    "test:api": "node scripts/smoke.js",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
   },
-  "keywords": ["paypal", "ai", "agentic-commerce", "hackathon", "express", "ag-grid"],
+  "keywords": [
+    "paypal",
+    "ai",
+    "agentic-commerce",
+    "hackathon",
+    "express",
+    "ag-grid"
+  ],
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "wrangler": "^4.147.0"
   }
 }

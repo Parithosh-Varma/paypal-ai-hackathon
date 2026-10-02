@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ShopGenie Docs — setup, API, deploy</title>
+  <meta name="description" content="ShopGenie docs: local setup, environment, API reference, deployment, Devpost checklist." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,900&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="awning" aria-hidden="true"></div>
+
+<nav class="topnav"><div class="wrap">
+  <a class="brand" href="index.html">🧞 ShopGenie</a>
+  <span class="topnav-links"><a href="app.html">Open the tool</a><a href="docs.html" aria-current="page">Docs</a></span>
+</div></nav>
+
+<main class="wrap docs">
+  <p class="eyebrow">Docs</p>
+  <h1 class="display small">Everything a judge needs.</h1>
+
+  <section class="card" id="setup"><p class="eyebrow">Run it</p><h2>Local setup (2 min)</h2>
+    <pre class="terminal">npm install
+cp .env.example .env   # optional — demo runs with zero keys
+npm start              # → http://localhost:3000</pre>
+    <p class="mut">Zero-key mode uses mock PayPal orders + stub AI with identical API contracts. The header badge always shows which mode you’re in.</p>
+  </section>
+
+  <section class="card" id="env"><p class="eyebrow">Keys</p><h2>Environment</h2>
+    <table class="doctable">
+      <tr><th>Var</th><th>Where</th><th>Effect</th></tr>
+      <tr><td><code>PAYPAL_CLIENT_ID</code> / <code>PAYPAL_CLIENT_SECRET</code></td><td>PayPal Developer → Sandbox apps</td><td>Real Orders v2 create + capture; Smart Buttons light up</td></tr>
+      <tr><td><code>OPENAI_API_KEY</code> (+ <code>AI_MODEL</code>)</td><td>platform.openai.com/api-keys</td><td>Real LLM catalog, chat, insights (default <code>gpt-4o-mini</code>)</td></tr>
+      <tr><td><code>PAYPAL_MODE</code></td><td><code>sandbox</code> (default) or <code>live</code></td><td>PayPal endpoint selection — keep <code>sandbox</code></td></tr>
+    </table>
+  </section>
+
+  <section class="card" id="api"><p class="eyebrow">Reference</p><h2>API</h2>
+    <table class="doctable">
+      <tr><th>Method + path</th><th>Does</th></tr>
+      <tr><td><code>GET /api/health</code></td><td>Mode flags, provider, counts</td></tr>
+      <tr><td><code>GET /api/products</code></td><td>Live catalog</td></tr>
+      <tr><td><code>POST /api/products/generate</code> <code>{idea}</code></td><td>AI catalog → replaces shelves</td></tr>
+      <tr><td><code>POST /api/ai/chat</code> <code>{message, cart}</code></td><td>Agent reply + <code>recommendedIds</code></td></tr>
+      <tr><td><code>GET /api/ai/insights</code></td><td>Revenue, orders, bullets</td></tr>
+      <tr><td><code>POST /api/orders</code> <code>{amount, currency, items}</code></td><td>PayPal create (or <code>MOCK-</code> order)</td></tr>
+      <tr><td><code>POST /api/orders/:id/capture</code></td><td>PayPal capture + ledger write</td></tr>
+      <tr><td><code>GET /api/transactions</code></td><td>Ledger rows for AG Grid</td></tr>
+    </table>
+    <p class="mut">Postman collection at repo root (<code>postman_collection.json</code>). Static hosting (Cloudflare Pages) runs the same contracts in-browser via offline fallback — see “Deploy”.</p>
+  </section>
+
+  <section class="card" id="deploy"><p class="eyebrow">Ship it</p><h2>Deploy</h2>
+    <h3 class="sub">Cloudflare Pages (this site)</h3>
+    <pre class="terminal">npx wrangler pages deploy public --project-name shopgenie</pre>
+    <p class="mut">Static Pages hosting serves landing, tool, and docs. Without a backend the tool auto-switches to in-browser demo mode (seed catalog, localStorage ledger, mock captures) — same UI, same flow.</p>
+    <h3 class="sub">Full backend (Render)</h3>
+    <p class="mut">New Web Service → <code>npm install</code> / <code>npm start</code>, set <code>PAYPAL_CLIENT_ID</code>, <code>PAYPAL_CLIENT_SECRET</code>, <code>OPENAI_API_KEY</code>. <code>render.yaml</code> included.</p>
+  </section>
+
+  <section class="card" id="devpost"><p class="eyebrow">Submit it</p><h2>Devpost checklist</h2>
+    <ul class="check">
+      <li>Public GitHub repo with <code>LICENSE</code> — this repo</li>
+      <li>Setup instructions a stranger can follow — <a href="#setup">above</a></li>
+      <li>Working demo: hosted URL + local fallback</li>
+      <li>Video under 3 min — script in <code>docs/DEMO_SCRIPT.md</code></li>
+      <li>Tools declared: PayPal Orders v2, OpenAI, AG Grid, Render, Postman, Cloudflare Pages</li>
+    </ul>
+  </section>
+
+  <section class="card" id="arch"><p class="eyebrow">Inside</p><h2>Architecture</h2>
+    <pre class="terminal">browser (landing / tool / docs, vanilla JS + AG Grid CDN)
+  │  /api/* same-origin (Express) or in-browser fallback (Pages)
+  ▼
+Express src/server.js ── src/paypal.js (Orders v2, sandbox)
+  ├── src/ai.js (OpenAI if key, stub with same contract)
+  └── src/store.js (data/db.json ledger)</pre>
+  </section>
+</main>
+
+<footer>ShopGenie · PayPal AI Hackathon 2026 · <a href="app.html">Tool</a> · <a href="index.html">Home</a></footer>
+</body>
+</html>

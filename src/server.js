@@ -166,6 +166,14 @@ app.post("/api/webhooks/paypal", (req, res) => {
   res.json({ received: true });
 });
 
+app.get("/app", (_req, res) =>
+  res.sendFile(path.join(__dirname, "..", "public", "app.html"))
+);
+
+app.get("/docs", (_req, res) =>
+  res.sendFile(path.join(__dirname, "..", "public", "docs.html"))
+);
+
 app.get("*", (_req, res) =>
   res.sendFile(path.join(__dirname, "..", "public", "index.html"))
 );

@@ -3,10 +3,86 @@ const money = (n) => `$${Number(n || 0).toFixed(2)}`;
 let PRODUCTS = [];
 let CART = {}; // id -> qty
 
+// Same-origin API when served by Express; in-browser fallback when hosted
+// static (e.g. Cloudflare Pages) with no backend. Same contracts either way.
+let OFFLINE = false;
+const LS_P = "shopgenie_products", LS_TX = "shopgenie_txns";
+const SEED = [
+  { id: "p1", name: "Midnight Roast Beans (12oz)", price: 18, category: "Coffee", emoji: "☕", description: "Small-batch dark roast, chocolate + cherry notes." },
+  { id: "p2", name: "Pour-Over Starter Kit", price: 42, category: "Coffee", emoji: "🫖", description: "Dripper, filters + brewing guide for beginners." },
+  { id: "p3", name: "Ceramic Camp Mug", price: 24, category: "Merch", emoji: "🍶", description: "12oz speckled ceramic mug, campfire approved." },
+  { id: "p4", name: "Sticker Pack (x8)", price: 9, category: "Merch", emoji: "✨", description: "Waterproof vinyl stickers for laptops + bottles." },
+  { id: "p5", name: "Espresso Tasting Flight", price: 15, category: "In-store", emoji: "🧪", description: "Three single-origin shots + tasting card." },
+  { id: "p6", name: "Brew Class Ticket", price: 35, category: "In-store", emoji: "🎓", description: "45-min weekend brewing workshop, beans included." },
+];
+function lsGet(k, fb) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : fb; } catch { return fb; } }
+function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+function localProds() { const p = lsGet(LS_P, null); if (!p) { lsSet(LS_P, SEED); return SEED.slice(); } return p; }
+
+function stubTheme(idea) {
+  const s = (idea || "").toLowerCase();
+  const pick = (cat, items) => items.map(([name, price, emoji, description], i) => ({ id: `p${i + 1}`, name, price, category: cat, emoji, description }));
+  if (s.includes("plant")) return pick("Plants", [["Monstera Deliciosa (6in)", 28, "🪴", "Lush split-leaf starter plant."], ["Pothos Golden (4in)", 12, "🌿", "Trailing easy-care classic."], ["Succulent Trio", 18, "🌵", "Three drought-proof minis."], ["Ceramic Pot + Saucer", 22, "🏺", "Matte glaze, drainage hole."], ["Plant Food Concentrate", 14, "🧴", "Makes 24 gallons of feed."], ["Repotting Workshop Seat", 30, "🎓", "45-min weekend repot class."]]);
+  if (s.includes("candle") || s.includes("soap") || s.includes("skincare")) return pick("Goods", [["Soy Candle — Cedar + Sage", 24, "🕯️", "40-hr burn, cotton wick."], ["Whipped Body Butter", 19, "🧴", "Shea + oat, unscented."], ["Oatmeal Soap Bar Trio", 16, "🧼", "Cold-process, vegan."], ["Bath Soak Pouch", 14, "🛁", "Epsom + lavender, 8oz."], ["Discovery Set (4 minis)", 22, "🎁", "Try every scent."], ["Refill — Candle Insert", 12, "♻️", "Zero-waste wax refill."]]);
+  if (s.includes("art") || s.includes("print") || s.includes("sticker")) return pick("Art", [["Risograph Print 8x10", 25, "🖼️", "3-color riso, signed."], ["Sticker Pack (x10)", 10, "✨", "Waterproof vinyl sampler."], ["Zine — Issue 04", 12, "📖", "32 pages, full color."], ["Enamel Pin", 14, "📍", "Hard enamel, gold clutch."], ["Tote — Heavyweight", 28, "👜", "12oz canvas, big pocket."], ["Commission Slot", 60, "🎨", "Custom half-page piece."]]);
+  return SEED.slice();
+}
+
+function localApi(path, opts) {
+  const method = (opts?.method || "GET").toUpperCase();
+  let body = {};
+  try { body = opts?.body ? JSON.parse(opts.body) : {}; } catch {}
+  const prods = localProds();
+  const txs = lsGet(LS_TX, []);
+  if (path === "/api/health") return { ok: true, app: "shopgenie-static", paypalMode: "mock", paypalConfigured: false, aiConfigured: false, aiProvider: "stub", products: prods.length, transactions: txs.length };
+  if (path === "/api/config") return { paypalClientId: "", paypalMode: "mock" };
+  if (path === "/api/products" && method === "GET") return prods;
+  if (path === "/api/products/generate" && method === "POST") {
+    const products = stubTheme(body.idea || "");
+    lsSet(LS_P, products);
+    return { provider: "stub", products };
+  }
+  if (path === "/api/ai/chat" && method === "POST") {
+    const msg = String(body.message || "");
+    const m = msg.match(/under\s?\$?(\d+)/i) || msg.match(/\$?\s?(\d+)/);
+    const budget = m ? Number(m[1]) : null;
+    const words = msg.toLowerCase().split(/[^a-z]+/).filter((w) => w.length > 3);
+    const scored = prods.map((p) => {
+      let sc = 0;
+      const hay = `${p.name} ${p.description} ${p.category}`.toLowerCase();
+      for (const w of words) if (hay.includes(w)) sc += 2;
+      if (budget != null && p.price <= budget) sc += 3;
+      return { p, sc };
+    }).sort((a, b) => b.sc - a.sc);
+    const top = (scored[0]?.sc > 0 ? scored : prods.map((p) => ({ p, sc: 0 }))).slice(0, 3).map((x) => x.p);
+    const total = top.reduce((s, p) => s + p.price, 0);
+    return { provider: "stub", reply: `Based on "${msg}", I'd grab: ` + top.map((p) => `${p.emoji} ${p.name} ($${p.price.toFixed(2)})`).join(", ") + `. Est. total $${total.toFixed(2)} — take the tickets and ring the till to complete the demo.`, recommendedIds: top.map((p) => p.id) };
+  }
+  if (path === "/api/ai/insights") {
+    const revenue = txs.reduce((s, t) => s + Number(t.amount || 0), 0);
+    return { provider: "stub", revenue, orders: txs.length, bullets: txs.length ? [`${txs.length} order(s), $${revenue.toFixed(2)} revenue on the static demo ledger.`, `Avg ticket $${(revenue / txs.length).toFixed(2)} — bundle cheapest + priciest to lift it.`, "Connect the Express backend for live PayPal + LLM insights."] : ["No sales yet — ring the till to populate the ledger.", "Tip: a sub-$10 entry ticket raises conversion.", "Connect the Express backend for live PayPal + LLM insights."] };
+  }
+  if (path === "/api/orders" && method === "POST") return { id: `MOCK-${Date.now().toString(36).toUpperCase()}`, status: "CREATED", mock: true };
+  const cap = path.match(/^\/api\/orders\/(.+)\/capture$/);
+  if (cap && method === "POST") {
+    const items = Array.isArray(body.items) ? body.items : [];
+    const tx = { id: `tx_${Date.now()}`, orderId: cap[1], amount: Number(body.amount) || 0, currency: "USD", status: "COMPLETED", mock: true, items, buyerNote: String(body.buyerNote || "").slice(0, 200), createdAt: new Date().toISOString() };
+    lsSet(LS_TX, [tx, ...txs]);
+    return { capture: { id: cap[1], status: "COMPLETED", mock: true }, transaction: tx };
+  }
+  if (path === "/api/transactions") return txs;
+  return { error: "static demo: unknown route " + path };
+}
+
 async function api(path, opts) {
-  const res = await fetch(path, { headers: { "Content-Type": "application/json" }, ...opts });
-  const text = await res.text();
-  try { return JSON.parse(text); } catch { return { raw: text, status: res.status }; }
+  if (!OFFLINE) {
+    try {
+      const res = await fetch(path, { headers: { "Content-Type": "application/json" }, ...opts });
+      const text = await res.text();
+      try { return JSON.parse(text); } catch { return { raw: text, status: res.status }; }
+    } catch { OFFLINE = true; }
+  }
+  return localApi(path, opts);
 }
 
 // Stall rail

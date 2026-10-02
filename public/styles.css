@@ -192,6 +192,51 @@ button.fixed { flex: 0 0 120px; }
 #ag-grid { height: 340px; width: 100%; border-radius: 12px; overflow: hidden; }
 
 footer { text-align: center; color: var(--mut); font-family: var(--mono); font-size: .75rem; padding: 2rem 1rem 3rem; }
+footer a, .mut a, .demo-list a { color: var(--lamp); }
+
+/* Top nav shared by landing / tool / docs */
+.topnav { border-bottom: 1px solid var(--line); background: rgba(20,16,31,.9); position: sticky; top: 0; z-index: 10; }
+.topnav .wrap { display: flex; align-items: center; justify-content: space-between; padding-top: .6rem; padding-bottom: .6rem; }
+.brand { color: var(--txt); text-decoration: none; font-weight: 700; font-size: 1.05rem; }
+.topnav-links { display: flex; gap: 1rem; }
+.topnav-links a { color: var(--mut); text-decoration: none; font-size: .92rem; }
+.topnav-links a:hover, .topnav-links a[aria-current="page"] { color: var(--lamp); }
+
+/* Landing */
+.landing-hero { padding-top: 3.5rem; }
+.cta-row { display: flex; gap: .7rem; flex-wrap: wrap; margin: 1.1rem 0; }
+.btn-lamp {
+  display: inline-block; background: var(--lamp); color: #241300; font-weight: 700;
+  border-radius: 10px; padding: .8rem 1.4rem; text-decoration: none;
+}
+.btn-lamp:hover { background: #ffc14d; }
+.btn-ghost {
+  display: inline-block; border: 1px solid var(--line); color: var(--txt);
+  border-radius: 10px; padding: .8rem 1.4rem; text-decoration: none;
+}
+.btn-ghost:hover { border-color: var(--orchid); }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.demo-strip { display: grid; grid-template-columns: 1.2fr 1fr; gap: 1rem; align-items: center; border-color: #6b551f; }
+.demo-list { margin: .5rem 0; padding-left: 1.2rem; color: var(--mut); }
+.demo-list li { margin: .3rem 0; }
+.demo-cta .mut { font-size: .85rem; }
+
+/* Docs */
+.docs { padding-bottom: 2rem; }
+.display.small { font-size: clamp(1.9rem, 4.5vw, 2.8rem); }
+.doctable { width: 100%; border-collapse: collapse; font-size: .9rem; margin: .6rem 0; }
+.doctable th, .doctable td { text-align: left; padding: .55rem .6rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+.doctable th { font-family: var(--mono); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--mut); }
+.doctable td code { white-space: nowrap; }
+.check { margin: .5rem 0; padding-left: 1.2rem; color: var(--mut); }
+.check li { margin: .35rem 0; }
+
+@media (max-width: 720px) {
+  .steps, .demo-strip { grid-template-columns: 1fr; }
+}
+
+/* Sharp corners everywhere: no rounded UI, including pills, tickets, receipts, and third-party grids. */
+*, *::before, *::after { border-radius: 0 !important; }
 
 @media (max-width: 640px) {
   .tabs { grid-template-columns: 1fr; }
