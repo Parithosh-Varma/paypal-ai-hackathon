@@ -21,7 +21,7 @@
 <header class="hero landing-hero"><div class="wrap">
   <p class="eyebrow">PayPal AI Hackathon 2026 · Sandbox only — no real money moves</p>
   <h1 class="display">Rub the lamp.<br />Stock the stall. <em>Ring the till.</em></h1>
-  <p class="lede">Solo sellers lose weekends to listings and “what should I buy?” DMs. ShopGenie turns one sentence into a live catalog, lets an AI agent sell from it, and checks out through PayPal — end to end, in about a minute.</p>
+  <p class="lede">Solo sellers lose entire weekends to the same grind: writing product listings that sound alive, answering the same "what should I buy?" messages five times a day, wiring up a checkout that doesn't leak money, and then staring at a spreadsheet trying to figure out what actually sold. ShopGenie collapses all four jobs into one minute. You describe the business in a single sentence — the kind of thing you'd say to a friend, like "plant store for apartments" or "handmade candles for people who hate strong scents" — and an AI stocks six priced, described products onto your shelves. An AI sales agent then minds the counter: it talks to shoppers, reads their budget and vibe, recommends from your live catalog, and drops picks straight into the cart. Checkout runs through PayPal Sandbox Orders v2, created and captured server-side, with Smart Buttons for real sandbox buyers and a one-click mock capture for judges who just want to see the till ring with zero keys. Every sale lands in a filterable AG Grid ledger with revenue, order count, average ticket, and AI-written closing notes. Three stalls, one working till, no setup beyond <code>npm install</code>.</p>
   <div class="cta-row">
     <a class="btn-lamp" href="app.html">Open the tool →</a>
     <a class="btn-ghost" href="docs.html">Read the docs</a>
@@ -35,30 +35,84 @@
 </div></header>
 
 <main class="wrap">
+  <section class="card" aria-label="The problem">
+    <p class="eyebrow">The problem, stated plainly</p>
+    <h2>Opening a shop online still feels like opening a shop in 2009</h2>
+    <p class="mut">Consider Maya. She propagates monsteras in her apartment and sells cuttings to neighbors. She knows plants; she does not know product photography, SEO descriptions, pricing psychology, checkout integration, or bookkeeping. Every existing platform hands her one of two bad deals: a "simple" storefront builder that still makes her write every listing, set every price, and answer every DM herself — or a "done for you" marketplace that takes a cut, owns the customer relationship, and buries her shop on page forty. The AI wave was supposed to fix this, but most AI commerce demos are chatbots stapled to a buy button: the AI doesn't know the inventory, the payment doesn't know the conversation, and the seller learns nothing from any of it. Meanwhile PayPal already moves money for millions of small businesses, and modern LLMs can genuinely write, recommend, and reason — but almost nobody has wired the two together so that the AI sells <em>from</em> the live inventory and the money lands in a ledger the seller can actually read. That gap is the whole reason ShopGenie exists.</p>
+    <p class="mut">So we built the smallest thing that closes it end to end: one sentence in, stocked shelves out; one vibe-heavy question in, a curated cart out; one capture call, and the till receipt prints itself into a ledger with AI notes on what just happened. Nothing in that loop is a mockup. The catalog persists, the agent reads it live, the order hits the PayPal API (or an identical-contract mock when no keys are present), and the dashboard counts real rows. If you remove the AI, there is no inventory and no salesperson. If you remove PayPal, no money moves and there is nothing to count. Both integrations are load-bearing, which is exactly what the hackathon asks for.</p>
+  </section>
+
   <section class="card steps" aria-label="How it works">
-    <article><p class="eyebrow">Stall 1 · Stock it</p><h2>Wish a catalog</h2><p class="mut">One line — “plant store for apartments” — becomes six priced, described products. Real LLM with a key, same-contract stub without.</p></article>
-    <article><p class="eyebrow">Stall 2 · Sell it</p><h2>Let the agent sell</h2><p class="mut">A budget-aware assistant recommends from your live shelves, adds to cart, and hands off to PayPal checkout.</p></article>
-    <article><p class="eyebrow">Stall 3 · Count it</p><h2>Count the till</h2><p class="mut">Revenue, orders, average ticket, a filterable AG Grid ledger, and AI closing notes — after every ring.</p></article>
+    <article>
+      <p class="eyebrow">Stall 1 · Stock it</p>
+      <h2>Wish a catalog</h2>
+      <p class="mut">Type one line about the business — "plant store for apartments", "handmade candles", "sticker art shop", "cozy coffee corner". The generator returns six products with names, USD prices, categories, emoji marks, and sub-90-character descriptions, and replaces the live shelves instantly. With an <code>OPENAI_API_KEY</code> set, a real model writes the copy in strict JSON; without one, a built-in themed stub produces the same JSON contract, so the demo, the judging, and the video all work offline. Try three different ideas in a row and watch the whole store re-theme itself in seconds — that re-theming speed is the point. A seller who pivots from candles to bath soaks on a Tuesday night should not spend the weekend rewriting listings.</p>
+    </article>
+    <article>
+      <p class="eyebrow">Stall 2 · Sell it</p>
+      <h2>Let the agent sell</h2>
+      <p class="mut">The counter agent reads the live catalog — not a cached copy, the actual shelves — plus whatever is already in the cart. A shopper writes the way people really write: "gift under $25 for a plant lover", "something cozy for my dad who drinks too much coffee", "cheapest way to try everything". The agent extracts the budget, matches keywords against names, descriptions, and categories, recommends one to three picks with prices and a running total, and drops its top pick directly into the cart. Then the shopper checks out: real PayPal Smart Buttons when sandbox credentials exist, or a one-click mock capture that runs the identical server path (create order → capture → ledger write) with zero keys. Either way a paper receipt renders with line items, and the signature PAID stamp slams down on it.</p>
+    </article>
+    <article>
+      <p class="eyebrow">Stall 3 · Count it</p>
+      <h2>Count the till</h2>
+      <p class="mut">After close, the dashboard answers the three questions every seller asks: how much came in (revenue), how many people paid (orders), and how big the average basket was (average ticket). Below that, a sortable, filterable AG Grid ledger lists every capture with its PayPal order id, amount, currency, status, mock-or-live flag, buyer note, and timestamp. And because raw rows don't tell you what to do next, an AI closing-notes panel writes three bullets every time it loads: who your best seller is, one concrete pricing or bundling move to lift average order value, and the single next action worth taking. Run a second sale and watch every number move — the dashboard is live, not a screenshot.</p>
+    </article>
+  </section>
+
+  <section class="card" aria-label="Feature details">
+    <p class="eyebrow">Under the counter</p>
+    <h2>Six things that make it real</h2>
+    <div class="steps">
+      <article><h3 class="sub">Same-contract stub AI</h3><p class="mut">Every AI endpoint — generation, chat, insights — serves the exact same JSON whether the key is present or not. That means the demo never says "configure an API key to continue", judges never get stuck, and swapping stub for model changes the words without changing a single line of frontend code. The provider badge in the header always tells you which brain is working.</p></article>
+      <article><h3 class="sub">Server-side PayPal truth</h3><p class="mut">Orders are created and captured with the PayPal REST API using short-lived OAuth tokens, never by trusting the browser. Secrets never leave the server; only the publishable client id is exposed for Smart Buttons. Mock orders use the same ledger-writing path, so a mock sale and a sandbox sale are indistinguishable downstream.</p></article>
+      <article><h3 class="sub">A ledger, not a log line</h3><p class="mut">Captures persist as structured transactions — order id, items with quantities, buyer notes, timestamps — in a JSON ledger the dashboard queries. Filter by status, sort by time, search notes. This is the artifact a real seller needs at tax time, and it's the artifact that proves the payment loop actually closed.</p></article>
+      <article><h3 class="sub">Zero-build frontend</h3><p class="mut">No bundler, no framework, no build step. Three pages of vanilla HTML, one stylesheet, one script, AG Grid from CDN. A judge clones, runs <code>npm install &amp;&amp; npm start</code>, and is clicking through a sale in under two minutes. Nothing to compile means nothing to break.</p></article>
+      <article><h3 class="sub">Static-safe offline mode</h3><p class="mut">Hosted on Cloudflare Pages with no backend, the tool detects the missing API and switches to an in-browser twin: seeded catalog, localStorage ledger, mock captures, same UI, same flow. One codebase serves both the full-backend demo and the always-on static link. The docs explain exactly which mode you're in and how to tell.</p></article>
+      <article><h3 class="sub">Sponsor tracks, honestly earned</h3><p class="mut">AG Grid powers the transaction ledger judges actually sort and filter. Render hosts the backend with a checked-in <code>render.yaml</code>. A Postman collection documents every endpoint. Cloudflare Pages hosts these very pages. Each integration does visible work in the demo rather than sitting in a dependency list.</p></article>
+    </div>
   </section>
 
   <section class="card demo-strip" aria-label="Try it">
     <div><p class="eyebrow">60-second demo</p><h2>Three clicks, one sale</h2>
     <ol class="demo-list">
-      <li>Generate the catalog in <a href="app.html">the tool</a></li>
-      <li>Ask the agent for “a gift under $25” and capture</li>
-      <li>Watch the dashboard ledger grow</li>
+      <li><strong>Stock it.</strong> Open <a href="app.html">the tool</a>, keep "cozy neighborhood coffee shop" or type your own idea, hit "Grant the wish". Watch six products land on the shelves with prices and descriptions.</li>
+      <li><strong>Sell it.</strong> Jump to Stall 2, ask the agent for "a gift under $25", let it recommend and auto-fill the cart, then ring the till — mock capture with no keys, or PayPal buttons with sandbox keys.</li>
+      <li><strong>Count it.</strong> Open Stall 3. Revenue, orders, and average ticket have moved; your sale sits in the AG Grid ledger; fresh AI closing notes explain what to do next.</li>
     </ol></div>
     <div class="demo-cta"><a class="btn-lamp" href="app.html">Start the demo →</a>
-    <p class="mut">Judges: no setup beyond <code>npm install &amp; npm start</code>. Full script in <a href="docs.html">docs</a>.</p></div>
+    <p class="mut">Judges: no setup beyond <code>npm install &amp; npm start</code>, then open <code>http://localhost:3000</code>. The full word-for-word video script lives in <a href="docs.html">docs</a>, and the tool itself has a guided "Run full demo" button that performs all three steps automatically.</p></div>
   </section>
 
   <section class="card" aria-label="Why it matters">
     <p class="eyebrow">Why judges should care</p>
     <h2>PayPal and AI, both load-bearing</h2>
-    <p class="mut">PayPal isn’t a button slapped on — orders are created and captured server-side via Orders v2, recorded to a ledger, and reconcilable. AI isn’t garnish — it writes the inventory, staffs the counter, and closes the books. Remove either and the product stops working.</p>
+    <p class="mut">Hackathon projects love to name-drop two platforms while only needing one. Here's the load-bearing test for ShopGenie, stated as plainly as we can. Remove the AI: there is no catalog (a seller would have to hand-write six listings), no salesperson (shoppers browse a dead grid), and no closing notes (the dashboard is arithmetic without advice). The app becomes a static product list with a PayPal button — a weekend project, not a product. Remove PayPal: the agent can recommend all day, but no order is created, no money moves, no receipt prints, and the ledger stays empty forever. The dashboard — a third of the app — has nothing to count. What remains is a chatbot with opinions and no cash register.</p>
+    <p class="mut">Against the published criteria: technological implementation shows in the Orders v2 create/capture round-trip plus three distinct LLM call sites with a graceful stub fallback; design shows in a coherent night-market identity carried across landing, tool, docs, and even the launch video; potential impact shows in the millions of solo sellers for whom "one sentence becomes a shop" removes the exact weekend of drudgery that stops them from starting; innovation shows in treating the agent as staff with register access rather than a help widget; presentation shows in a demo that completes a real sale in a minute with zero keys. That is the case, and the tool is the evidence.</p>
+  </section>
+
+  <section class="card" aria-label="Frequently asked questions">
+    <p class="eyebrow">Fair questions</p>
+    <h2>Asked, answered</h2>
+    <h3 class="sub">Does any real money move?</h3>
+    <p class="mut">No. Everything runs against the PayPal Sandbox or the mock path — both move zero real dollars by construction. The header badge always shows whether the till is in mock or live-sandbox mode, so there is never ambiguity about what just happened.</p>
+    <h3 class="sub">What if I have no API keys?</h3>
+    <p class="mut">Then you get the full demo anyway. The stub AI writes themed catalogs, answers with budget-aware recommendations, and computes ledger-backed insights; mock PayPal orders flow through the identical capture-and-record path. Add keys later and the same buttons do the real thing.</p>
+    <h3 class="sub">Why vanilla JS instead of a framework?</h3>
+    <p class="mut">Judging logistics. A hackathon demo is evaluated by strangers on unknown machines in limited time. Eliminating the build step eliminates an entire class of "it worked on my laptop" failures, and the whole app remains readable in one sitting — which matters when evaluators read code.</p>
+    <h3 class="sub">Can this become a real business?</h3>
+    <p class="mut">The honest roadmap: multi-seller accounts, PayPal Invoices for custom quotes, payouts for marketplace splits, webhook-driven fulfillment, and persistent hosted Postgres instead of the JSON ledger. The architecture already isolates those seams — <code>src/paypal.js</code>, <code>src/ai.js</code>, and <code>src/store.js</code> are the three files that would grow. See the docs roadmap section for the full list.</p>
+    <h3 class="sub">Where do I start as a judge?</h3>
+    <p class="mut"><a href="app.html">The tool</a>, Stall 1, press "Run full demo". Sixty seconds later you'll have seen every integration fire. Then read <a href="docs.html">the docs</a> for the API table and the Devpost checklist.</p>
+  </section>
+
+  <section class="card" aria-label="Roadmap">
+    <p class="eyebrow">After the hackathon</p>
+    <h2>What we'd build with another month</h2>
+    <p class="mut">First, real seller identity: accounts, multiple storefronts per seller, and per-store ledgers instead of one shared till. Second, deeper PayPal surface: Invoices API for agent-negotiated custom quotes ("the agent agreed on $45 — here's your invoice"), subscriptions for the workshop seats and plant-food refills the stub catalogs keep inventing, and webhooks so completed payments trigger fulfillment emails without polling. Third, a real database and hosted search so the ledger scales past demo size and shoppers can search across thousands of products. Fourth, evaluation: side-by-side stub-versus-LLM quality checks on generated listings, so the "same contract" promise stays honest as models change. Fifth, accessibility and i18n passes — the night-market look must survive screen readers and right-to-left layouts before it touches a real seller's livelihood. None of that is needed to prove the concept; all of it is scoped, filed, and waiting.</p>
   </section>
 </main>
 
-<footer>ShopGenie · PayPal AI Hackathon 2026 · <a href="app.html">Tool</a> · <a href="docs.html">Docs</a></footer>
+<footer>ShopGenie · PayPal AI Hackathon 2026 · <a href="app.html">Tool</a> · <a href="docs.html">Docs</a> · Sandbox only, no real money moves.</footer>
 </body>
 </html>

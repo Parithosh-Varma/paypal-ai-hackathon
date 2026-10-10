@@ -1,29 +1,29 @@
-# Brag Plan: ShopGenie
+# Brag Plan: ShopGenie (re-roll)
 
 ## What is this app?
-ShopGenie turns one sentence about a business into a live AI-stocked catalog, lets an AI agent sell from it, and checks out through PayPal Sandbox — a working till that demos with zero API keys.
+ShopGenie turns one sentence about a business into a live AI-stocked catalog, lets an AI sales agent sell from it, and checks out through PayPal Sandbox — a working till that demos with zero API keys.
 
-## The angle
-A midnight-bazaar blockbuster trailer. The product already looks like a night market (deep violet-black, marigold lamp glow, paper receipts); the video treats its checkout like a heist payoff: wish → shelves → agent → the PAID stamp slam. The stamp is the hero — the one frame everyone will remember.
+## The angle (re-roll)
+No metaphors, no trailer voice, no invented staging. The video is a dramatized screen recording of one real sale inside the actual ShopGenie UI — the same wish bar, the same six tickets, the same chat bubbles, the same receipt from the product, rebuilt pixel-faithful with sharp corners. Cinematic treatment comes from the camera (slow push-ins, dramatic wipes, scale entrances) and the sound (one deep bell when money moves), not from cosplay. If a frame doesn't look like the app, it gets cut.
 
 ## Hook (first 2-3 seconds)
-Black screen. A marigold lamp-glow ignites from nothing, breathing with the music. One line slams in: "EVERY SELLER HAS THE SAME WISH." No product yet — just the glow and the promise.
+Second zero: the product itself, huge. A giant wish bar fills the frame and starts typing "plant store for apartments" with audible key ticks while the camera pushes in. No title, no setup line — the thing is the hook.
 
 ## Key moments (the middle)
-- Six product tickets fan onto the shelves one by one, dealt like cards, right after the wish is typed.
-- The agent's chat answers "gift under $25 for a plant lover" and a ticket flies into the cart by itself.
-- The paper receipt prints, the total lands, and the PAID stamp slams down full-frame — the trailer's explosion scene, with a bell that rings over the music.
+- Six real product tickets deal onto a faithful shelf grid, prices in marigold mono, then hold.
+- The real agent chat: buyer asks, agent answers with prices, a ticket visibly flies into the cart and the total ticks $0 → $12 → $30.
+- The paper receipt prints line by line and the PAID stamp slams down — the one moment of spectacle, earned because everything before it was real UI.
 
 ## Outro / punchline
-SHOPGENIE fills the screen over the lamp glow. Under it, the site's own line: "Rub the lamp. Stock the stall. Ring the till." Small print: "PayPal AI Hackathon 2026 · Sandbox only". Music fades, glow holds, cut.
+The dashboard proof: three stat blocks from the depicted sale (REVENUE $30.00 / ORDERS 1 / AVG TICKET $30.00), then SHOPGENIE slams in with the verbatim tagline "Rub the lamp. Stock the stall. Ring the till." and the fine print. Numbers first, name last — the sale is the argument.
 
 ## User flow worth showing
-Type a business idea ("plant store for apartments") → AI stocks 6 products → ask the agent ("gift under $25") → capture the PayPal order → PAID stamp + dashboard ledger grows. The centerpiece scenes recreate this flow, not the landing page.
+Type a business idea ("plant store for apartments") → AI stocks 6 products → ask the agent ("gift under $25 for a plant lover") → capture the PayPal order → PAID stamp + ledger-backed stats. Every scene is that flow, in order, in the app's own clothes.
 
 ## Tone
 - Preset: cinematic
-- Creative direction: midnight-bazaar blockbuster trailer for a hackathon till
-- Interpretation: big full-bleed type, dramatic reveals with long-enough holds, slow crossfades and scale entrances; energy comes from the stamp slam and card deals, not from fast cuts.
+- Creative direction: product-truth cinema — the app, shot like a blockbuster
+- Interpretation: full-bleed faithful UI, slow camera push-ins, dramatic wipes between scenes, big mono overlays that label what the viewer is seeing; restraint everywhere except the stamp slam.
 
 ## Format: landscape — 1920x1080
 ## Duration: 20 seconds
@@ -32,72 +32,72 @@ Type a business idea ("plant store for apartments") → AI stocks 6 products →
 - Background: #14101F (Night Ink)
 - Accent: #FFB020 (Lamp Marigold)
 - Text: #F2ECFF
-- Secondary accents: #B388FF (Orchid Haze, AI moments), #2FD597 (Till Mint, success), receipt paper #FFF9EC for the till scene only
-- Display font: Fraunces (900, landing hero)
+- Secondary accents: #B388FF (Orchid Haze, AI moments), #2FD597 (Till Mint, totals/success), receipt paper #FFF9EC for the till scene only
+- Display font: Fraunces (900)
 - Body font: Space Grotesk
-- Mono/data font: IBM Plex Mono (prices, receipt, ledger)
-- Strongest visual element: the till receipt with perforated edges and the rotated PAID stamp slam
+- Mono/data font: IBM Plex Mono (prices, receipt, ledger, overlays)
+- Sharp corners everywhere (radius 0) — matches the product UI
+- Strongest visual element: the faithful app screens themselves — wish bar with marigold caret, ticket grid with perforated stub edges, chat bubbles (buyer marigold right, agent plum left), receipt with dashed perforation, rotated PAID stamp
 
 ## Share copy (draft)
 ShopGenie. Rub the lamp. Stock the stall. Ring the till.
 
 ## Audio direction
-- Role: cinematic support — a steady bed with a low swell under the stamp, restrained motion-matched accents, subtle audio-reactive lamp glow
-- Music: happy-beats-business-moves-vol-12-by-ende-dot-app.mp3 (steady and clean, ~110 BPM; theSKILL's pick for cinematic)
-- Music treatment: start at 0, bed at 0.30–0.35, swell under the PAID stamp (~13s), fade out 18.5–20s under the outro
-- Music cue guidance: bundled preset read (cues/happy-beats-business-moves-vol-12…music-cues.json); strong-cue locks: PAID stamp → 13.11s strong cue; outro logo land → 17.47s strong cue; ticket deals snap to beat grid ~4.39–7.09 (every other beat, then hold the full set for readability)
-- Audio-reactive treatment: subtle; music RMS breathes the lamp glow and hero title presence only. No waveforms, no visualizers.
-- SFX posture: moderate — 2 big ones (hook land, PAID slam) plus small motion-matched accents (key ticks, card deals, click, stamp). Coherent palette: impact + casino + keyboard + interface.
+- Role: cinematic support — steady bed, one swell under the stamp, restrained motion-matched accents
+- Music: happy-beats-business-moves-vol-12-by-ende-dot-app.mp3 (~110 BPM)
+- Music treatment: start at 0, bed 0.30–0.35, swell under the PAID stamp (~13s), fade out 18.5–20s
+- Music cue guidance: bundled preset read; strong-cue locks: PAID stamp → 13.11s; logo land → 17.4 (≈17.47s cue); ticket deals → beat grid ~4.5–6.1, then hold full set ≥1.2s
+- Audio-reactive treatment: subtle; RMS breathes overlay glow/title presence only. No waveforms.
+- SFX posture: moderate — key ticks, card deals, UI clicks, two deep bells. Same coherent palette as v1.
 - Audio-coupled moments:
-  - Hook line entrance — short announcement thud when it lands
-  - Wish typing — per-character key ticks (randomized keypress files)
-  - Six tickets dealing in — card-place accents on first/last deals, soft drops between
-  - Agent reply + ticket-to-cart — UI click + soft drop
-  - PAID stamp slam — deep resonant bell (impactBell_heavy), allowed to ring over the music
-  - Outro logo — second bell or swell tail, then silence under fade
-- Restraint rule: never stack SFX over the stamp bell; no SFX during the final 1.5s fade except the music tail.
+  - Wish typing — randomized keypress ticks
+  - Ticket deals — card-slide accents on first/last, soft drops between
+  - Chat send + cart land — UI click + drop; total tick steps
+  - Stamp slam — impactBell_heavy, rings over music, nothing stacked
+  - Logo land — soft bell tail; music tail carries the fade
+- Restraint rule: SFX only for visible actions; silence under the final fade except the music tail.
 
 ## Storyboard
 
-### Scene 1 — The Wish — 3s (0.0–3.0)
-Black. A marigold radial glow ignites center-frame and breathes (audio-reactive). Text slams in, two lines: "EVERY SELLER" / "HAS THE SAME WISH." Hold settled through 3.0.
-Sequential/interaction: none — one slam, one hold.
-Audio intent: arrival — the trailer starts.
-Audio-coupled idea: short announcement thud as the lines land; music starts at 0.
-Music: vol-12 bed, low.
-Transition mood: dramatic → Scene 2 (slow crossfade with scale 0.95→1.0).
+### Scene 1 — The wish, live — 3s (0.0–3.0)
+Faithful giant wish bar (dark field, mono text, marigold caret) types "plant store for apartments" while the camera pushes in slowly. Eyebrow overlay: "SHOPGENIE · LIVE SALE". No other text — the typing is the scene.
+Sequential/interaction: yes — 26 characters type out with key ticks.
+Audio intent: arrival through action, not announcement.
+Audio-coupled idea: randomized keypress ticks across the typing window.
+Music: vol-12 bed from 0.
+Transition mood: dramatic wipe → Scene 2.
 
-### Scene 2 — Stock the shelves — 4.5s (3.0–7.5)
-A wish-bar types "plant store for apartments" (key ticks). Then six product tickets deal onto the shelves one by one — 🪴 Monstera $28, 🌿 Pothos $12, 🌵 Succulent Trio $18, 🏺 Pot + Saucer $22, 🧴 Plant Food $14, 🎓 Workshop $30 (real stub catalog copy). Caption locks: "ONE SENTENCE STOCKS THE SHELVES." Full set holds to 7.5.
-Sequential/interaction: yes — typed wish, then six ticket deals snapped to every other beat (~4.39–7.09 window), full set held ≥1.2s after the last deal.
-Audio intent: building — playful dealing rhythm under a steady bed.
-Audio-coupled idea: randomized keypress ticks while typing; card-place accents on first and last deals, soft drops between.
+### Scene 2 — Shelves fill — 4.5s (3.0–7.5)
+Faithful ticket grid: six real tickets (Monstera $28, Pothos $12, Succulent Trio $18, Pot + Saucer $22, Plant Food $14, Repot Class $30) with stub-edge detail deal in one by one. Overlay caption: "SIX PRODUCTS. ONE SENTENCE." Full set holds to 7.5.
+Sequential/interaction: yes — six deals on the beat grid (~4.5–6.1), full set held ≥1.2s.
+Audio intent: building rhythm.
+Audio-coupled idea: card-slide on first/last deals, soft drops between.
 Music: bed continues.
 Transition mood: dramatic wipe → Scene 3.
 
-### Scene 3 — The agent minds the counter — 4.5s (7.5–12.0)
-Chat window: buyer bubble types "gift under $25 for a plant lover". Agent bubble answers with two picks and prices. One ticket lifts off the shelf and drops into a cart; cart total ticks to a sum. Caption: "THE AGENT MINDS THE COUNTER."
-Sequential/interaction: yes — buyer message, agent reply, ticket-to-cart flight, total tick-up.
-Audio intent: cleverness — light UI sounds, nothing heavy.
-Audio-coupled idea: UI click on send, soft drop on cart land; counter tick if a number rolls.
+### Scene 3 — The agent closes — 4.5s (7.5–12.0)
+Faithful chat: buyer bubble (marigold, right) "gift under $25 for a plant lover"; agent bubble (plum, left) answers with Pothos $12 + Succulent Trio $18 and adds to cart. A ticket flies into the cart row; total ticks $0.00 → $12.00 → $30.00 in steps. Overlay: "THE AGENT CLOSES."
+Sequential/interaction: yes — message, reply, flight, stepped total.
+Audio intent: cleverness, light UI sounds.
+Audio-coupled idea: click on send, drop on cart land.
 Music: bed continues.
-Transition mood: dramatic crossfade → Scene 4.
+Transition mood: hard cut → Scene 4 (the register rings).
 
 ### Scene 4 — Ring the till — 4.5s (12.0–16.5)
-Paper receipt (#FFF9EC) prints downward with line items and total. "CAPTURE" presses. The PAID stamp slams down rotated at ~13.1 (beat-locked to the 13.11s strong cue) with a deep bell that rings over the music. Receipt + stamp hold to 16.5. Caption: "PAYPAL RINGS THE TILL."
-Sequential/interaction: yes — receipt print, capture press, stamp slam; the slam is the video's single biggest moment.
-Audio intent: payoff — the bell is the loudest, proudest sound in the video.
-Audio-coupled idea: stamp slam = impactBell_heavy at the slam frame; nothing else stacked on it.
-Music: swell under the stamp, then settle.
-Transition mood: hard cut to black, one beat → Scene 5.
+Faithful receipt prints line by line (Pothos ×1 $12, Succulent ×1 $18, TOTAL $30.00); PAID stamp slams at ~13.05 (beat-lock 13.11) with the deep bell. Overlay: "PAYPAL RINGS THE TILL." Hold to 16.5.
+Sequential/interaction: yes — print, lines, slam; the single biggest moment.
+Audio intent: payoff.
+Audio-coupled idea: stamp = impactBell_heavy at the slam frame, nothing stacked.
+Music: swell under stamp, settle after.
+Transition mood: hard cut → Scene 5.
 
-### Scene 5 — Title card — 3.5s (16.5–20.0)
-SHOPGENIE full-screen in heavy display type over the lamp glow (logo lands ~17.5, near the 17.47s strong cue). Tagline under it, verbatim: "Rub the lamp. Stock the stall. Ring the till." Small print: "PayPal AI Hackathon 2026 · Sandbox only · Zero keys to demo". Music fades 18.5–20. Hold the lockup to the end — no black tail.
-Sequential/interaction: none.
-Audio intent: landing — swell tail, then quiet.
-Audio-coupled idea: soft bell or nothing on logo land; let the music tail carry.
+### Scene 5 — The count — 3.5s (16.5–20.0)
+Dashboard proof from the depicted sale: REVENUE $30.00 / ORDERS 1 / AVG TICKET $30.00 arrive, then SHOPGENIE lands ~17.4 with the verbatim tagline "Rub the lamp. Stock the stall. Ring the till." and fine print "PAYPAL AI HACKATHON 2026 · SANDBOX ONLY · ZERO KEYS TO DEMO". Music fades 18.5–20. Lockup holds — no black tail.
+Sequential/interaction: yes — three stat arrivals, then logo.
+Audio intent: landing.
+Audio-coupled idea: soft bell tail on logo; music tail carries fade.
 Music: fade out 18.5–20.0.
 Transition mood: end (hold final frame).
 
 **Music mood for this video:** cinematic
-**Audio summary:** A steady vol-12 bed swells once under the PAID stamp slam and fades under the title card, with key ticks, card deals, UI clicks, and two deep bells marking the hook and the payoff.
+**Audio summary:** The same vol-12 bed swells once under the stamp and fades under the proof card; key ticks, card deals, clicks, and two bells mark only visible actions.

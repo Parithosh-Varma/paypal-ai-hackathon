@@ -27,8 +27,8 @@ Create a cinematic launch-style brag video for ShopGenie (PayPal AI Hackathon en
 - Tone preset: cinematic
 - Creative direction: midnight-bazaar blockbuster trailer for a hackathon till
 - Interpretation: big full-bleed type, dramatic reveals with settled holds; energy from the stamp slam and card deals, not fast cuts. Slow crossfades / dramatic wipes with scale.
-- Angle: the checkout is treated like a heist payoff — wish, shelves, agent, then the PAID stamp slam as the explosion scene.
-- Hook: black screen, marigold lamp-glow ignites, "EVERY SELLER HAS THE SAME WISH." slams in (first 3s).
+- Angle: product-truth cinema — a dramatized screen recording of one real sale in the actual ShopGenie UI, rebuilt pixel-faithful. Camera push-ins, dramatic wipes, and one deep bell carry the cinema — not metaphors. Any frame that doesn't look like the app gets cut.
+- Hook: second zero is the product itself, huge — a giant faithful wish bar typing "plant store for apartments" with key ticks while the camera pushes in.
 - Outro / punchline: SHOPGENIE full-screen over lamp glow + verbatim tagline + small print; music fades, lockup holds to end.
 - Avoid:
   - Generic SaaS language
@@ -43,17 +43,18 @@ Create a cinematic launch-style brag video for ShopGenie (PayPal AI Hackathon en
 - Display font: Fraunces 900 (ship local woff2 with @font-face; fallback to heavy serif if fetch fails)
 - Body font: Space Grotesk (ship local woff2 with @font-face)
 - Mono font: IBM Plex Mono for prices/receipt/ledger (ship local woff2 with @font-face)
-- Visual references from the project: awning stripe (marigold/violet repeating bands), ticket cards with perforated stub edge, chat bubbles (buyer marigold right, agent plum left), receipt with dashed perforation divider, rotated PAID stamp in Till Mint green
+- Visual references from the project: awning stripe, wish bar with marigold caret, ticket cards with perforated stub edge, chat bubbles (buyer marigold right, agent plum left), cart row with mint total, receipt with dashed perforation divider, rotated PAID stamp in Till Mint green, dashboard stat blocks
+- Corners: sharp everywhere (border-radius 0), matching the product UI
 
 ## Storyboard
 Use the storyboard in `brag-output/brag-plan.md` as the creative contract.
 
 Scene summary:
-1. The Wish — 3s — lamp glow ignites on black; "EVERY SELLER HAS THE SAME WISH." slams and holds
-2. Stock the shelves — 4.5s — wish types out; six product tickets deal in one by one; "ONE SENTENCE STOCKS THE SHELVES."; full set holds
-3. The agent minds the counter — 4.5s — chat exchange; ticket flies to cart; total ticks; "THE AGENT MINDS THE COUNTER."
-4. Ring the till — 4.5s — receipt prints; capture; PAID stamp slams ~13.1s (beat-lock 13.11); "PAYPAL RINGS THE TILL."
-5. Title card — 3.5s — SHOPGENIE + verbatim tagline + small print; music fades 18.5–20; hold lockup, no black tail
+1. The wish, live — 3s — giant faithful wish bar types the idea on camera push-in; eyebrow "SHOPGENIE · LIVE SALE"
+2. Shelves fill — 4.5s — six real tickets deal onto a faithful grid; overlay "SIX PRODUCTS. ONE SENTENCE."; full set holds
+3. The agent closes — 4.5s — faithful chat exchange; ticket flies to cart; total ticks $0 → $12 → $30; overlay "THE AGENT CLOSES."
+4. Ring the till — 4.5s — faithful receipt prints; PAID stamp slams ~13.05 (beat-lock 13.11); overlay "PAYPAL RINGS THE TILL."
+5. The count — 3.5s — dashboard stats from the sale (REVENUE $30 / ORDERS 1 / AVG $30), SHOPGENIE lands ~17.4, verbatim tagline + fine print; hold lockup
 
 ## Audio
 - Audio role: cinematic support
